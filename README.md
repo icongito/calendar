@@ -20,27 +20,46 @@ Built with Electron + React + TypeScript.
 
 ## Prerequisites
 
-- **macOS** (the app targets macOS; Electron will run on other platforms but notifications and vibrancy are Mac-specific)
+- **macOS** (notifications and vibrancy are Mac-specific)
 - **Node.js 18+** and **npm 9+**
-- A **Google account**
-- A **Google Cloud project** with Calendar and Classroom APIs enabled (steps below)
+- Check your Node version: `node -v` — if it says v16 or lower, install the latest from [nodejs.org](https://nodejs.org)
 
 ---
 
-## Quick start
+## Launch (no Google account needed)
+
+The app works fully offline with manual events. Google Calendar is optional.
 
 ```bash
+# 1. Clone the repo
 git clone https://github.com/icongito/calendar.git
 cd calendar
+
+# 2. Install dependencies (takes ~1–2 min first time)
 npm install
+
+# 3. Create a .env file (can be empty if skipping Google)
 cp .env.example .env
-# fill in your credentials in .env (see below)
+
+# 4. Run the app
 npm run dev
 ```
+
+The app window opens automatically. You'll see mock events on the first run.
+
+**Adding events manually** — click the `+` button next to today's date. You can type a title, pick a time, write notes, and attach a screenshot of the task.
+
+---
+
+## Optional: connect Google Calendar
+
+If you want real calendar events pulled in automatically, you'll need a personal Gmail account (`@gmail.com`) to set up Google Cloud credentials. School/work Google Workspace accounts often block the Cloud Console.
 
 ---
 
 ## Setting up Google OAuth credentials
+
+> Skip this entire section if you just want to use manual events.
 
 The app reads from Google Calendar and Google Classroom using OAuth 2.0. You need your own credentials — they stay on your machine and are never shared.
 
@@ -101,11 +120,25 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 ## Running the app
 
 ```bash
-npm run dev       # development (hot reload)
+npm run dev       # development with hot reload
 npm run build     # production build → out/
 ```
 
-On first launch, go to the **⚙ Settings** tab and click **Connect Google Account**. A browser window will open for the OAuth flow. After authorizing, your events load automatically.
+Once Google credentials are in `.env`, go to the **⚙ Settings** tab → **Connect Google Account**. A browser window opens for the OAuth flow. After authorizing, your events load automatically and refresh every 5 minutes.
+
+---
+
+## Adding events manually
+
+No Google account required. Click the **`+`** button in the Today view header:
+
+- **Title** — what the task is
+- **Date + time** — or toggle "All day"
+- **Description** — notes, links, whatever
+- **Screenshot** — drag a photo onto the upload area or click to browse. The image shows as a thumbnail on the card and full-size in Focus Mode.
+- **Color** — pick from 6 swatches to color-code by subject or priority
+
+Events are saved locally and persist between app restarts.
 
 ---
 
