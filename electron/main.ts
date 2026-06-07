@@ -2,13 +2,14 @@ import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, Notification } fr
 import { join } from 'path'
 import Store from 'electron-store'
 import { setupGoogleAuth } from './google-auth'
-import type { AppSettings, CalendarEvent } from '../src/types'
+import type { AppSettings, CalendarEvent, ManualEvent } from '../src/types'
 
 const store = new Store<{
   settings: AppSettings
   googleTokens: { access_token: string; refresh_token: string; expiry_date: number } | null
   cachedEvents: CalendarEvent[]
   doneEventIds: string[]
+  manualEvents: ManualEvent[]
 }>({
   defaults: {
     settings: {
@@ -27,6 +28,7 @@ const store = new Store<{
     googleTokens: null,
     cachedEvents: [],
     doneEventIds: [],
+    manualEvents: [],
   },
 })
 
@@ -223,6 +225,26 @@ ipcMain.handle('google:getClassroomWork', async () => {
   }
 
   return assignments
+})
+
+ipcMain.handle('events:getManual', () => {
+  return store.get('manualEvents') || []
+})
+
+ipcMain.handle('events:saveManual', (_event, manualEvent: ManualEvent) => {
+  const events = store.get('manualEvents') || []
+  const idx = events.findIndex((e) => e.id === manualEvent.id)
+  if (idx >= 0) {
+    events[idx] = manualEvent
+  } else {
+    events.push(manualEvent)
+  }
+  store.set('manualEvents', events)
+})
+
+ipcMain.handle('events:deleteManual', (_event, id: string) => {
+  const events = store.get('manualEvents') || []
+  store.set('manualEvents', events.filter((e) => e.id !== id))
 })
 
 ipcMain.handle('settings:get', () => store.get('settings'))

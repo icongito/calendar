@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { CalendarEvent, AppSettings } from '../types'
+import type { CalendarEvent, AppSettings, ManualEvent } from '../types'
 
 type View = 'today' | 'week' | 'settings'
 
@@ -9,6 +9,11 @@ interface AppStore {
 
   events: CalendarEvent[]
   setEvents: (events: CalendarEvent[]) => void
+
+  manualEvents: ManualEvent[]
+  setManualEvents: (events: ManualEvent[]) => void
+  addOrUpdateManualEvent: (event: ManualEvent) => void
+  deleteManualEvent: (id: string) => void
 
   focusEventId: string | null
   setFocusEventId: (id: string | null) => void
@@ -51,6 +56,21 @@ export const useAppStore = create<AppStore>((set) => ({
 
   events: [],
   setEvents: (events) => set({ events }),
+
+  manualEvents: [],
+  setManualEvents: (manualEvents) => set({ manualEvents }),
+  addOrUpdateManualEvent: (event) =>
+    set((state) => {
+      const idx = state.manualEvents.findIndex((e) => e.id === event.id)
+      if (idx >= 0) {
+        const updated = [...state.manualEvents]
+        updated[idx] = event
+        return { manualEvents: updated }
+      }
+      return { manualEvents: [...state.manualEvents, event] }
+    }),
+  deleteManualEvent: (id) =>
+    set((state) => ({ manualEvents: state.manualEvents.filter((e) => e.id !== id) })),
 
   focusEventId: null,
   setFocusEventId: (id) => set({ focusEventId: id }),

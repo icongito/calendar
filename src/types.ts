@@ -7,10 +7,15 @@ export interface CalendarEvent {
   isAllDay: boolean
   calendarId: string
   calendarColor: string
-  source: 'google' | 'classroom'
+  source: 'google' | 'classroom' | 'manual'
   htmlLink?: string
   location?: string
   isDone: boolean
+}
+
+export interface ManualEvent extends CalendarEvent {
+  imageData?: string  // base64 data URL
+  isManual: true
 }
 
 export interface ClassroomAssignment {

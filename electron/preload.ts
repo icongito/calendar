@@ -33,4 +33,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   onFocusEvent: (callback: (eventId: string) => void) =>
     ipcRenderer.on('focus-event', (_event, eventId) => callback(eventId)),
+
+  getManualEvents: () =>
+    ipcRenderer.invoke('events:getManual'),
+
+  saveManualEvent: (event: unknown) =>
+    ipcRenderer.invoke('events:saveManual', event),
+
+  deleteManualEvent: (id: string) =>
+    ipcRenderer.invoke('events:deleteManual', id),
 })

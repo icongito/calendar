@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { useAppStore } from '../store/useAppStore'
 import { TaskCard } from '../components/TaskCard'
+import { AddEventModal } from '../components/AddEventModal'
 
 export function TodayView() {
   const events = useAppStore((s) => s.events)
+  const manualEvents = useAppStore((s) => s.manualEvents)
   const isOnline = useAppStore((s) => s.isOnline)
   const isLoading = useAppStore((s) => s.isLoading)
+  const [showAddModal, setShowAddModal] = useState(false)
+
+  const allEvents = [...events, ...manualEvents]
 
   const todayEvents = events
     .filter((e) => dayjs(e.start).isSame(dayjs(), 'day') || (e.isAllDay && dayjs(e.end).isSame(dayjs(), 'day')))
