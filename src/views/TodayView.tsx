@@ -13,7 +13,7 @@ export function TodayView() {
 
   const allEvents = [...events, ...manualEvents]
 
-  const todayEvents = events
+  const todayEvents = allEvents
     .filter((e) => dayjs(e.start).isSame(dayjs(), 'day') || (e.isAllDay && dayjs(e.end).isSame(dayjs(), 'day')))
     .sort((a, b) => dayjs(a.start).valueOf() - dayjs(b.start).valueOf())
 
@@ -40,11 +40,22 @@ export function TodayView() {
             Offline — showing cached data
           </div>
         )}
-        <div className="font-display text-3xl font-bold text-[#1A1714] leading-tight">
-          {dayjs().format('MMMM D')}
-        </div>
-        <div className="text-sm text-[#7A7470] mt-0.5">
-          {dayjs().format('dddd')} · {pendingEvents.length} task{pendingEvents.length !== 1 ? 's' : ''} today
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <div className="font-display text-3xl font-bold text-[#1A1714] leading-tight">
+              {dayjs().format('MMMM D')}
+            </div>
+            <div className="text-sm text-[#7A7470] mt-0.5">
+              {dayjs().format('dddd')} · {pendingEvents.length} task{pendingEvents.length !== 1 ? 's' : ''} today
+            </div>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="mt-1 w-8 h-8 rounded-full bg-[#D4600A] text-white flex items-center justify-center text-xl font-light hover:bg-[#B84F08] transition-colors shadow-sm flex-shrink-0"
+            title="Add event"
+          >
+            +
+          </button>
         </div>
       </div>
 
@@ -105,6 +116,10 @@ export function TodayView() {
           </div>
         )}
       </div>
+
+      {showAddModal && (
+        <AddEventModal onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   )
 }

@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { useAppStore } from '../store/useAppStore'
+import type { ManualEvent } from '../types'
 
 export function FocusMode() {
   const focusEventId = useAppStore((s) => s.focusEventId)
   const events = useAppStore((s) => s.events)
+  const manualEvents = useAppStore((s) => s.manualEvents)
   const setFocusEventId = useAppStore((s) => s.setFocusEventId)
   const markEventDone = useAppStore((s) => s.markEventDone)
 
   const [timeLeft, setTimeLeft] = useState('')
   const [visible, setVisible] = useState(false)
 
-  const event = events.find((e) => e.id === focusEventId)
+  const allEvents = [...events, ...manualEvents]
+  const event = allEvents.find((e) => e.id === focusEventId)
+  const imageData = event ? (event as ManualEvent).imageData : undefined
 
   useEffect(() => {
     if (focusEventId) {
@@ -70,6 +74,16 @@ export function FocusMode() {
             <span className="text-sm text-[#7A7470]">
               {event.isAllDay ? 'All day' : `${dayjs(event.start).format('h:mm A')} – ${dayjs(event.end).format('h:mm A')}`}
             </span>
+          </div>
+        )}
+
+        {imageData && (
+          <div className="mb-6 rounded-xl overflow-hidden border border-[#E8E4DC] shadow-sm">
+            <img
+              src={imageData}
+              alt="Event attachment"
+              className="w-full max-h-48 object-cover"
+            />
           </div>
         )}
 
